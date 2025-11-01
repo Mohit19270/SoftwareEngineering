@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book an Appointment</title>
+  <link rel="stylesheet" href="book-slot-style.css">
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h2>Book Your Appointment</h2>
+      <p>Select a department, doctor, and time slot.</p>
+    </div>
+
+    <form id="bookingForm">
+      
+      <label for="department">1. Select Department:</label>
+      <select id="department" name="department" required>
+        <option value="">-- Please select a department --</option>
+      </select>
+      
+      <label for="doctor">2. Select Doctor:</label>
+      <select id="doctor" name="doctor" required disabled>
+        <option value="">-- Select department first --</option>
+      </select>
+      
+      <label for="date">3. Select Date:</label>
+      <input type="date" id="date" name="date" required disabled>
+      
+      <label>4. Select Time Slot:</label>
+      <div id="slots-container">
+        <p>Please select a doctor and date to see available slots.</p>
+      </div>
+
+      <button type="submit" id="book-now-btn" disabled>Book Appointment</button>
+    </form>
+    
+    <div id="feedback-container"></div>
+
+  </div> <script src="book-slot.js"></script> 
+</body>
+</html>

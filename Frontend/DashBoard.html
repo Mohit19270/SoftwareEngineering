@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthCheck Patient Dashboard</title>
+    <link rel="stylesheet" href="dashboard-style.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i> HealthCheck
+            </div>
+            <div class="user-info">
+                <i class="fas fa-bell notification-icon"></i>
+                <img src="https://via.placeholder.com/40" alt="Profile" class="avatar">
+                <span id="welcome-message">Welcome, Patient!</span> 
+                <button class="logout-btn">Logout</button>
+            </div>
+        </header>
+
+        <div class="main-layout">
+            <nav class="sidebar">
+                <ul>
+                    <li class="nav-item active">
+                        <a href="DashBoard.html" class="nav-link">
+                            <i class="fas fa-home"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="BookSlot.html" class="nav-link">
+                            <i class="fas fa-calendar-alt"></i> Book Appointment
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <i class="fas fa-list-alt"></i> My Appointments
+                    </li>
+                    <li class="nav-item">
+                        <i class="fas fa-file-medical-alt"></i> Health Records
+                    </li>
+                    <li class="nav-item">
+                        <i class="fas fa-user-cog"></i> Profile Settings
+                    </li>
+                    <li class="nav-item logout-link">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </li>
+                </ul>
+            </nav>
+
+            <main class="main-content">
+                <div class="welcome-banner">
+                    <h2 id="banner-welcome">Good Afternoon, [Patient Name]!</h2>
+                    <p>You have 1 upcoming appointment. Don't forget to review your test results.</p>
+                </div>
+
+                <div class="widget appointment-card">
+                    </div>
+
+                <div class="widgets-row">
+                    <div class="widget book-now-widget">
+                        <a href="BookSlot.html" class="btn btn-primary btn-large" style="text-decoration: none;">
+                            <i class="fas fa-arrow-right"></i> Book New Checkup
+                        </a>
+                    </div>
+                    </div>
+            </main>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Get patient name from localStorage
+            const patientName = localStorage.getItem('patientName');
+            
+            if (patientName) {
+                // Update welcome messages
+                document.getElementById('welcome-message').textContent = `Welcome, ${patientName.split(' ')[0]}!`;
+                document.getElementById('banner-welcome').textContent = `Good Afternoon, ${patientName}!`;
+            }
+
+            // 2. Add logout functionality
+            const handleLogout = () => {
+                localStorage.removeItem('patientId');
+                localStorage.removeItem('patientName');
+                window.location.href = 'Login.html';
+            };
+
+            document.querySelector('.logout-btn').addEventListener('click', handleLogout);
+            document.querySelector('.logout-link').addEventListener('click', handleLogout);
+        });
+    </script>
+</body>
+</html>

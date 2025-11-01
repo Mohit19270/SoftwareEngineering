@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patient Registration</title>
+  <link rel="stylesheet" href="Reg-style.css"> 
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h2>HEALTH CHECKUP SLOT SYSTEM</h2>
+      <h3>Patient Registration</h3>
+    </div>
+
+    <form id="registrationForm">
+      <label for="fullname">Full Name:</label>
+      <input type="text" id="fullname" name="fullName" required> 
+
+      <label for="email">Email Address:</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="phone">Phone Number:</label>
+      <input type="tel" id="phone" name="phoneNumber" maxlength="10" pattern="[0-9]{10}" required>
+
+      <label for="dob">Date of Birth:</label>
+      <input type="date" id="dob" name="dateOfBirth" required>
+
+      <label for="newpassword">Password:</label>
+      <input type="password" id="newpassword" name="newpassword" required>
+
+      <label for="password">Confirm Password:</label>
+      <input type="password" id="password" name="confirmPassword" required>
+
+      <label for="otp">Verify with OTP:</label>
+      <div class="otp-group">
+        <input type="text" id="otp" name="otp" placeholder="Enter 6-digit OTP" maxlength="6" required>
+        <button type="button" id="send-otp-btn">Send OTP</button>
+      </div>
+
+      <button type="submit">REGISTER</button>
+    </form>
+    
+    <div id="feedback-container"></div>
+
+  </div> <script src="Script1.js"></script> 
+</body>
+</html>
