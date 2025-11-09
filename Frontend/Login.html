@@ -3,40 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Health Checkup Slot System Login</title>
-    <link rel="stylesheet" href="login-style.css"> 
+    <title>HealthCheck Login</title>
+    <link rel="stylesheet" href="Login-Style.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="background-container">
-        <div class="login-box">
-            <div class="header">
-                <span class="logo">➕</span>
-                <h1>HEALTH CHECKUP SLOT SYSTEM</h1>
-            </div>
-            
-            <form id="loginForm">
-                <div class="input-group">
-                    <input type="text" id="username" name="username" placeholder="User ID / Email / Reg No." required>
-                </div>
-                
-                <div class="input-group">
-                    <input type="password" id="password" name="password" placeholder="Password ***" required>
-                </div>
-                
-                <button type="submit" class="login-button">LOGIN</button>
-            </form>
-            
-            <div class="links">
-                <a href="ForgotPassword.html" class="forgot-link">Forgot Password?</a>
-                <span>|</span>
-                <a href="Reg.html" class="register-link">New Patient? Register Here</a>
-            </div>
-            
-            <div class="footer-info">
-            </div>
         </div>
-    </div>
     
-    <script src="Script.js"></script> 
+    <div class="login-box">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i> HealthCheck
+            </div>
+            <h1>HEALTH CHECKUP & DOCTOR REGISTRATION SYSTEM</h1>
+        </div>
+
+        <form id="loginForm">
+            <div class="input-group">
+                <input type="text" id="username" name="username" placeholder="User ID / Email / Reg No." required>
+            </div>
+            
+            <div class="input-group">
+                <input type="password" id="password" name="password" placeholder="Password ***" required>
+            </div>
+            
+            <button type="submit" class="login-button">LOGIN</button>
+        </form>
+
+        <div id="feedback-container" style="margin-top: 15px;"></div>
+
+        <div class="link-footer-container">
+            <a href="ForgotPassword.html" class="link">Forgot Password?</a>
+            <span class="separator">|</span>
+            <a href="Reg.html" class="link">New Patient? Register Here</a>
+            <span class="separator">|</span>
+            <a href="DoctorReg.html" class="link doctor-reg-link">**Reg Doctor**</a> 
+        </div>
+
+    </div>
+
+    <script src="Login.js"></script>
 </body>
 </html>

@@ -2,7 +2,7 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background-color: #f4f7f6; /* Light gray background */
+    background-color: #f4f7f6;
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -10,6 +10,7 @@ body {
 }
 
 .background-container {
+    /* Your original background path */
     background: url('/Users/mohitmac/SoftwareEngineering/Frontend/Image/BG2.png') no-repeat center center fixed; 
     background-size: cover;
     filter: blur(0px); 
@@ -44,6 +45,7 @@ body {
 
 .logo {
     font-size: 2.5em;
+    font-weight: bold;
     color: #007BFF;
     display: block;
     margin-bottom: 10px;
@@ -93,45 +95,42 @@ input[type="password"]:focus {
     font-weight: bold;
     margin-top: 10px;
     transition: background-color 0.3s;
-    text-decoration: none; /* For links styled as buttons */
+    text-decoration: none;
 }
 
 .login-button:hover {
     background-color: #0056b3;
 }
 
-.login-button:disabled {
-    background-color: #aaa;
-    cursor: not-allowed;
-}
-
-
-/* --- Footer Links --- */
-.links {
+/* ***** MODIFIED FOOTER LINKS STYLES ***** */
+.link-footer-container {
     margin-top: 25px;
     font-size: 0.9em;
-    color: #666;
+    /* Use flexbox for horizontal alignment */
+    display: flex;
+    justify-content: center; /* Center the entire group of links */
+    align-items: center;
+    flex-wrap: wrap; 
+    gap: 5px 8px; /* Spacing between elements */
 }
 
-.links a {
+.link-footer-container .link {
     color: #007BFF;
     text-decoration: none;
-    margin: 0 5px;
+    transition: color 0.2s;
+    white-space: nowrap; 
 }
 
-.links a:hover {
+.link-footer-container .link:hover {
     text-decoration: underline;
 }
 
-.links span {
+.link-footer-container .separator {
     color: #ccc;
+    font-size: 1.1em;
 }
 
-/* Feedback Message Styling */
-.feedback-message {
+.link-footer-container .doctor-reg-link {
     font-weight: bold;
-    margin-top: 15px;
-    padding: 10px;
-    border-radius: 5px;
-    text-align: center;
+    color: #dc3545; /* Red color for visibility */
 }

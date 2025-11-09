@@ -6,6 +6,8 @@ const bodyParser = require('body-parser');
 const dbPool = require('./config/db');
 const corsMiddleware = require('./middleware/cors');
 
+
+const doctorRoutes = require('./routes/doctorRoutes');
 const patientRoutes = require('./routes/patientRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const passwordRoutes = require('./routes/passwordRoutes'); // <-- NEW
@@ -18,6 +20,7 @@ app.use(corsMiddleware);
 app.use(bodyParser.json()); 
 
 // --- Routes ---
+app.use('/api/doctor', doctorRoutes);
 app.use('/api', patientRoutes);
 app.use('/api/booking', bookingRoutes);
 app.use('/api/password', passwordRoutes); // <-- NEW

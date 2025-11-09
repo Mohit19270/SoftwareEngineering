@@ -11,12 +11,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const API_URL = 'http://localhost:3000/api/booking';
   let allDoctors = [];
-  let selectedSlot = null;
+  let selectedSlot = null; // Stores the selected time slot
 
   // --- 0. Check if user is logged in ---
   const patientId = localStorage.getItem('patientId');
   if (!patientId) {
-    displayFeedback('You are not logged in. Redirecting...', true);
+    displayFeedback('You are not logged in. Redirecting to login...', true);
     setTimeout(() => {
       window.location.href = 'Login.html';
     }, 2000);
@@ -41,10 +41,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- 2. Populate Departments Dropdown ---
   function populateDepartments(doctors) {
-    const departments = [...new Set(doctors.map(doc => doc.department))];
-    deptSelect.innerHTML = '<option value="">-- Select a department --</option>';
+    const uniqueDepartments = [...new Set(doctors.map(d => d.department))];
+    deptSelect.innerHTML = '<option value="">-- Please select a department --</option>';
     
-    departments.forEach(dept => {
+    uniqueDepartments.forEach(dept => {
       const option = document.createElement('option');
       option.value = dept;
       option.textContent = dept;
@@ -52,94 +52,125 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- 3. Populate Doctors Dropdown (on department change) ---
-  deptSelect.addEventListener('change', () => {
-    const selectedDept = deptSelect.value;
+  // --- 3. Populate Doctors Dropdown based on Department ---
+  function populateDoctors(department) {
     doctorSelect.innerHTML = '<option value="">-- Select a doctor --</option>';
     doctorSelect.disabled = true;
     dateInput.disabled = true;
-    resetSlots();
+    
+    if (!department) return;
 
-    if (selectedDept) {
-      const doctorsInDept = allDoctors.filter(doc => doc.department === selectedDept);
-      doctorsInDept.forEach(doc => {
+    const filteredDoctors = allDoctors.filter(d => d.department === department);
+
+    if (filteredDoctors.length > 0) {
+      filteredDoctors.forEach(d => {
         const option = document.createElement('option');
-        option.value = doc.id;
-        option.textContent = doc.name;
+        // CRITICAL: Ensure the value is the doctor_id (integer)
+        option.value = d.doctor_id; 
+        option.textContent = d.name;
         doctorSelect.appendChild(option);
       });
       doctorSelect.disabled = false;
+    } else {
+      displayFeedback('No doctors found for this department.', true);
     }
-  });
+  }
 
-  // --- 4. Fetch Available Slots (on doctor or date change) ---
+  // --- 4. Fetch Available Slots ---
   async function fetchSlots() {
     const doctorId = doctorSelect.value;
     const date = dateInput.value;
+    
+    // Clear previous slots and selection
+    slotsContainer.innerHTML = '';
+    selectedSlot = null;
+    bookNowBtn.disabled = true;
 
     if (!doctorId || !date) {
-      resetSlots();
+      slotsContainer.innerHTML = '<p>Select a doctor and date to see available slots.</p>';
       return;
     }
 
-    resetSlots('<p>Loading slots...</p>');
-    
     try {
-      const response = await fetch(`${API_URL}/slots?doctorId=${doctorId}&date=${date}`);
-      if (!response.ok) throw new Error('Failed to fetch slots');
+      const url = `${API_URL}/slots?doctorId=${doctorId}&date=${date}`;
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to fetch slots.');
+      }
       
       const slots = await response.json();
-      
-      if (slots.length === 0) {
-        resetSlots('<p>No available slots for this date.</p>');
-      } else {
-        slotsContainer.innerHTML = ''; // Clear loading message
-        slots.forEach(slot => {
-          const button = document.createElement('button');
-          button.type = 'button';
-          button.className = 'slot-button';
-          button.textContent = slot;
-          button.dataset.slot = slot;
-          button.addEventListener('click', selectSlot);
-          slotsContainer.appendChild(button);
-        });
-      }
+      renderSlots(slots);
+
     } catch (err) {
       displayFeedback(err.message, true);
+      slotsContainer.innerHTML = `<p class="feedback-message error">${err.message}</p>`;
     }
   }
+
+  // --- 5. Render Slot Buttons ---
+  function renderSlots(slots) {
+    if (slots.length === 0) {
+      slotsContainer.innerHTML = '<p>No available slots for this date.</p>';
+      return;
+    }
+
+    slots.forEach(slot => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'slot-button';
+      button.textContent = slot;
+      button.dataset.time = slot;
+      
+      button.addEventListener('click', () => {
+        // Remove 'selected' class from all buttons
+        document.querySelectorAll('.slot-button').forEach(btn => {
+          btn.classList.remove('selected');
+        });
+        
+        // Add 'selected' class to the clicked button
+        button.classList.add('selected');
+        selectedSlot = slot;
+        bookNowBtn.disabled = false;
+      });
+      
+      slotsContainer.appendChild(button);
+    });
+  }
   
-  doctorSelect.addEventListener('change', () => {
-    dateInput.disabled = !doctorSelect.value;
-    fetchSlots();
+  // --- Event Listeners ---
+  deptSelect.addEventListener('change', (e) => {
+    populateDoctors(e.target.value);
+    dateInput.value = ''; // Reset date when department changes
+  });
+  
+  doctorSelect.addEventListener('change', (e) => {
+    // Enable date input only if a doctor is selected
+    const doctorSelected = !!e.target.value;
+    dateInput.disabled = !doctorSelected;
+    dateInput.value = ''; // Reset date when doctor changes
+    fetchSlots(); // Call fetchSlots here to reset the container initially
   });
   
   dateInput.addEventListener('change', fetchSlots);
 
-  // --- 5. Handle Slot Selection ---
-  function selectSlot(e) {
-    // Remove 'selected' from all buttons
-    document.querySelectorAll('.slot-button').forEach(btn => {
-      btn.classList.remove('selected');
-    });
-    
-    // Add 'selected' to the clicked button
-    const button = e.target;
-    button.classList.add('selected');
-    selectedSlot = button.dataset.slot;
-    
-    bookNowBtn.disabled = false;
-  }
-  
-  function resetSlots(message = '<p>Please select a doctor and date.</p>') {
-    slotsContainer.innerHTML = message;
-    selectedSlot = null;
-    bookNowBtn.disabled = true;
-  }
-
-  // --- 6. Handle Form Submission ---
+  // --- Form Submission (THE FIX FOR 'undefined' doctor_id) ---
   bookingForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    
+    const doctorId = doctorSelect.value;
+    const date = dateInput.value;
+
+    // **1. CRITICAL VALIDATION** (Prevents sending 'undefined' to MySQL)
+    if (!doctorId || doctorId === "" || isNaN(parseInt(doctorId))) {
+        displayFeedback('Please select a doctor.', true);
+        return;
+    }
+    if (!date || date === "") {
+        displayFeedback('Please select an appointment date.', true);
+        return;
+    }
     if (!selectedSlot) {
       displayFeedback('Please select a time slot.', true);
       return;
@@ -149,33 +180,34 @@ document.addEventListener('DOMContentLoaded', () => {
     bookNowBtn.textContent = 'Booking...';
 
     const bookingData = {
-      patientId: patientId, // From localStorage
-      doctorId: doctorSelect.value,
-      date: dateInput.value,
-      time: selectedSlot
+        patientId: patientId, 
+        // **Parse to integer to ensure correct data type for MySQL**
+        doctorId: parseInt(doctorId), 
+        date: date,
+        time: selectedSlot
     };
 
     try {
-      const response = await fetch(`${API_URL}/appointments`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bookingData)
-      });
+        const response = await fetch(`${API_URL}/appointments`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(bookingData)
+        });
 
-      const data = await response.json();
+        const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.message || 'Booking failed');
-      }
+        if (!response.ok) {
+            throw new Error(data.message || 'Booking failed');
+        }
 
-      displayFeedback(`Success! ${data.message} Your appointment is confirmed.`, false);
-      bookingForm.style.display = 'none';
+        displayFeedback(`Success! ${data.message} Your appointment is confirmed.`, false);
+        bookingForm.style.display = 'none';
 
     } catch (err) {
-      displayFeedback(err.message, true);
+        displayFeedback(err.message, true);
     } finally {
-      bookNowBtn.disabled = false;
-      bookNowBtn.textContent = 'Book Appointment';
+        bookNowBtn.disabled = false;
+        bookNowBtn.textContent = 'Book Appointment';
     }
   });
   
@@ -187,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
       p.innerHTML = message;
       feedbackContainer.appendChild(p);
   }
-
-  // --- Initial call to fetch doctors ---
+  
+  // Initial data fetch
   fetchDoctors();
 });
