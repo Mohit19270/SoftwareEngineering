@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard</title>
+    <link rel="stylesheet" href="DashBoard-style.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Minimal custom style for the list */
+        .appointment-list {
+            list-style: none;
+            padding: 0;
+        }
+        .appointment-item {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .status-booked { color: #007BFF; font-weight: bold; }
+        .status-completed { color: #28a745; font-weight: bold; }
+        .status-cancelled { color: #dc3545; font-weight: bold; }
+        .btn-complete { background-color: #28a745; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+        .btn-complete:hover { background-color: #1e7e34; }
+        .appointment-info { flex-grow: 1; }
+        .appointment-info h4 { margin: 0 0 5px 0; }
+        .appointment-info p { margin: 0; font-size: 0.9em; color: #555; }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-user-md"></i> **Doctor Portal**
+            </div>
+            <div class="user-info">
+                <span id="welcome-doctor">Welcome, Doctor!</span>
+                <button class="logout-btn">Logout</button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="widgets-row">
+                <div class="widget">
+                    <h3>Your Upcoming Appointments</h3>
+                    <ul id="appointments-list" class="appointment-list">
+                        <li>Loading appointments...</li>
+                    </ul>
+                    <div id="feedback-container"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="doctor-dashboard.js"></script>
+</body>
+</html>
